@@ -13,6 +13,33 @@
   <meta property="og:description" content="A Minecraft survival SMP. The website goes live Friday 25 September 2026 at 18:00 UTC. Join the Discord at discord.gg/caelumsmp and get the launch email with the server IP.">
   <meta name="twitter:card" content="summary">
   <meta name="theme-color" content="#c6ff3d">
+  <!--
+    Discord component embed: replaces the plain card above when the link is posted in Discord.
+    Rules: https://discord.com/developers/docs/link-previews/component-embeds
+    - one Container (17); only types 1, 2, 9, 10, 11, 12, 14, 17; link buttons (style 5) with url/label/emoji only
+    - any invalid bit makes Discord silently fall back to the Open Graph card
+  -->
+  <script id="discord:component-embed" type="application/json">
+  {
+    "component": {
+      "type": 17,
+      "accent_color": 13041469,
+      "components": [
+        {
+          "type": 10,
+          "content": "# [CaelumSMP](https://caelumsmp.com/)\nA fresh Minecraft survival world, built together. Settle in, team up with friends and make your mark on a world that keeps growing."
+        },
+        {
+          "type": 1,
+          "components": [
+            { "type": 2, "style": 5, "url": "https://discord.gg/caelumsmp", "label": "Join Discord", "emoji": { "name": "💬" } },
+            { "type": 2, "style": 5, "url": "https://caelumsmp.com/", "label": "Get the launch email", "emoji": { "name": "✉️" } }
+          ]
+        }
+      ]
+    }
+  }
+  </script>
   <link rel="icon" href="favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
