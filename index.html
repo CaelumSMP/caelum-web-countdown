@@ -74,7 +74,7 @@
     .date { margin-top: 30px; font: 400 clamp(14px, 1.9vw, 22px)/1.3 var(--display); text-transform: uppercase; }
     .local, .live { margin-top: 14px; color: #dfe6ff; }
     .live { padding: 10px 16px; background: var(--lime); color: #04131c; font-weight: 700; clip-path: var(--notch); }
-    [hidden] { display: none; }
+    [hidden] { display: none !important; }
 
     /* Discord card: pixel-notched neon outline in --c (same pattern as the site's .neon cards) */
     .discord {
@@ -93,6 +93,23 @@
     .discord h2 { margin: 0 0 6px; font: 400 clamp(16px, 2vw, 20px)/1.2 var(--display); text-transform: uppercase; }
     .discord p { color: var(--dim); font-size: 15px; line-height: 1.4; }
     .discord .count { color: var(--text); font-weight: 700; }
+    .discord + .discord { margin-top: 16px; }
+    .news { --c: var(--cyan); flex-wrap: wrap; gap: 14px 20px; }
+    .news .text { flex-basis: 100% !important; }
+    .news form { display: flex; gap: 10px; flex: 1 1 100%; }
+    .news input {
+      flex: 1; min-width: 0; padding: 14px 16px; border: 0;
+      background: var(--bg); color: var(--text); font: 400 16px/1 var(--body);
+      clip-path: var(--notch); box-shadow: inset 0 0 0 2px #2a4257;
+    }
+    .news input::placeholder { color: #6f829c; }
+    .news input:focus { outline: none; box-shadow: inset 0 0 0 2px var(--c); }
+    .btn { border: 0; cursor: pointer; }
+    .btn:disabled { opacity: .6; cursor: wait; transform: none; }
+    .news .note { flex-basis: 100%; font-size: 13px; }
+    .news .note.ok { color: var(--lime); font-weight: 700; }
+    .news .note.err { color: var(--coral); font-weight: 700; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
     .discord .count::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 7px; background: var(--lime); vertical-align: 1px; }
     .btn {
       flex: none; display: inline-block; padding: 16px 22px;
@@ -109,6 +126,8 @@
       .discord { flex-wrap: wrap; }
       .discord .text { flex-basis: calc(100% - 84px); }
       .discord .btn { width: 100%; text-align: center; }
+      .news form { flex-wrap: wrap; }
+      .news input { flex-basis: 100%; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before { animation: none !important; transition: none !important; }
@@ -134,12 +153,27 @@
         </div>
         <a class="btn" href="https://discord.gg/caelumsmp" target="_blank" rel="noopener">Join Discord</a>
       </section>
+
+      <section class="discord news" id="news" aria-labelledby="news-title" hidden>
+        <div class="text">
+          <h2 id="news-title">Get the launch email</h2>
+          <p>One heads-up when the server opens, plus the IP. No spam.</p>
+        </div>
+        <form id="news-form" novalidate>
+          <label class="sr-only" for="news-email">Email address</label>
+          <input id="news-email" name="email_address" type="email" autocomplete="email" placeholder="you@example.com" required>
+          <button class="btn" type="submit">Notify me</button>
+        </form>
+        <p class="note" id="news-note" role="status">You'll get one email to confirm. Unsubscribe anytime.</p>
+      </section>
     </main>
   </div>
 
   <script>
     // Launch moment (UTC). Change this one value to move the countdown.
     const LAUNCH = "2026-09-25T18:00:00Z";
+    // Kit form ID (Kit → Grow → Landing Pages & Forms → your form; the number in its URL). Empty hides the sign-up card.
+    const KIT_FORM_ID = "";
 
     const target = Date.parse(LAUNCH);
     const stage = document.getElementById("stage");
@@ -217,6 +251,33 @@
         el.hidden = false;
       })
       .catch(() => {});
+
+    // Newsletter: our own form, posted straight to the Kit form's public subscribe endpoint (no API key in the page).
+    if (KIT_FORM_ID) {
+      const form = document.getElementById("news-form");
+      const note = document.getElementById("news-note");
+      const say = (text, cls) => { note.textContent = text; note.className = `note ${cls}`; };
+      document.getElementById("news").hidden = false;
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!form.email_address.checkValidity()) return say("That email doesn't look right.", "err");
+        const btn = form.querySelector("button");
+        btn.disabled = true;
+        try {
+          const r = await fetch(`https://app.kit.com/forms/${KIT_FORM_ID}/subscriptions`, {
+            method: "POST", body: new FormData(form), headers: { Accept: "application/json" },
+          });
+          const data = await r.json().catch(() => ({}));
+          if (!r.ok || data.status === "failed") throw new Error();
+          form.reset();
+          say("Almost done: check your inbox and confirm your email.", "ok");
+        } catch {
+          say("Couldn't sign you up right now. Try again, or join the Discord.", "err");
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    }
   </script>
 </body>
 </html>
