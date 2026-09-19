@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CaelumSMP — Coming soon</title>
+  <meta name="description" content="CaelumSMP, a Minecraft survival server. The website goes live soon.">
+  <link rel="icon" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #061722; --card: #0b2030; --text: #f4f7ff; --dim: #a9b8cf;
+      --lime: #c6ff3d; --coral: #ff5a5f; --cyan: #4de3ff; --violet: #a77bff;
+      --display: "Rubik Mono One", system-ui, sans-serif;
+      --body: "Space Grotesk", system-ui, sans-serif;
+      --notch: polygon(0 10px, 10px 10px, 10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 400 17px/1.55 var(--body); }
+    p, h1 { margin: 0; }
+
+    .stage {
+      --mx: 0; --my: 0;
+      position: relative; display: grid; place-items: center;
+      min-height: 100vh; min-height: 100dvh;
+      padding: 72px clamp(16px, 5vw, 80px) 96px;
+      overflow: hidden; text-align: center;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(198, 255, 61, .22), transparent 70%),
+        radial-gradient(ellipse 70% 60% at 50% 110%, rgba(255, 90, 95, .22), transparent 70%),
+        linear-gradient(125deg, #0b3b4a 0%, #142a78 40%, #5b2bd6 75%, #a12bd6 100%);
+    }
+    /* aurora curtains */
+    .stage::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: repeating-linear-gradient(100deg, transparent 0 60px, rgba(77, 227, 255, .07) 60px 120px, transparent 120px 200px, rgba(198, 255, 61, .06) 200px 240px);
+      animation: aurora 16s linear infinite;
+    }
+    @keyframes aurora { to { background-position: 480px 0; } }
+
+    /* floating blocks; --d is how far each drifts with the cursor */
+    .floater {
+      position: absolute; z-index: 0;
+      translate: calc(var(--mx) * var(--d) * 1px) calc(var(--my) * var(--d) * 1px);
+      transition: translate .3s ease-out;
+      animation: spin 7s ease-in-out infinite alternate;
+      filter: drop-shadow(0 12px 0 rgba(4, 19, 28, .3));
+    }
+    @keyframes spin {
+      from { transform: translateY(-10px) rotate(-8deg); }
+      to { transform: translateY(10px) rotate(8deg); }
+    }
+
+    main { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1040px; }
+    .brand { display: flex; align-items: center; gap: 12px; font: 400 clamp(18px, 2.4vw, 26px)/1 var(--display); text-transform: uppercase; }
+    h1 { margin: 30px 0 44px; font: 400 clamp(36px, 7vw, 96px)/.95 var(--display); text-transform: uppercase; text-shadow: 6px 6px 0 rgba(4, 19, 28, .55); }
+    h1 em { font-style: normal; color: var(--lime); }
+
+    .cells { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(10px, 1.6vw, 20px); width: 100%; }
+    .cell {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      padding: clamp(18px, 2.6vw, 30px) 8px clamp(16px, 2vw, 24px);
+      background: var(--card); border-top: 8px solid var(--c);
+      clip-path: var(--notch); box-shadow: inset 0 -8px 0 rgba(0, 0, 0, .25);
+    }
+    .digits { display: flex; justify-content: center; font: 400 clamp(44px, 9vw, 120px)/1 var(--display); color: var(--c); }
+    /* each digit sits in a fixed-width box so the row never jitters */
+    .digits b { display: inline-block; width: .9em; font-weight: 400; animation: drop .35s cubic-bezier(.3, 1.5, .5, 1); }
+    @keyframes drop { from { opacity: 0; transform: translateY(-40%); } }
+    .unit { font: 700 clamp(11px, 1.2vw, 14px)/1 var(--body); letter-spacing: 2.5px; text-transform: uppercase; color: var(--dim); }
+
+    .date { margin-top: 30px; font: 400 clamp(14px, 1.9vw, 22px)/1.3 var(--display); text-transform: uppercase; }
+    .local, .live { margin-top: 14px; color: #dfe6ff; }
+    .live { padding: 10px 16px; background: var(--lime); color: #04131c; font-weight: 700; clip-path: var(--notch); }
+    [hidden] { display: none; }
+
+    @media (max-width: 640px) {
+      .cells { grid-template-columns: 1fr 1fr; }
+      .floater { opacity: .45; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <!-- floaters are added by the script below -->
+    <main>
+      <p class="brand"><svg width="44" height="44" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,4 96,27 50,50 4,27" fill="#c6ff3d"/><polygon points="4,27 50,50 50,97 4,74" fill="#8fc41f"/><polygon points="50,50 96,27 96,74 50,97" fill="#6a9612"/></svg>CaelumSMP</p>
+      <h1>The website<br><em>goes live in</em></h1>
+      <div class="cells" id="cells" role="timer" aria-label="Countdown to launch"></div>
+      <p class="date" id="date"></p>
+      <p class="local" id="local" hidden></p>
+      <p class="live" id="live" hidden>We're live. Refresh the page to jump in.</p>
+    </main>
+  </div>
+
+  <script>
+    // Launch moment (UTC). Change this one value to move the countdown.
+    const LAUNCH = "2026-09-25T18:00:00Z";
+
+    const target = Date.parse(LAUNCH);
+    const stage = document.getElementById("stage");
+    const cells = document.getElementById("cells");
+
+    // Floating blocks: position, size, cursor depth and top/left/right face colors.
+    const floaters = [
+      ["12%", "6%", 96, 40, "#c6ff3d", "#8fc41f", "#6a9612"],
+      ["70%", "3%", 60, -26, "#ff5a5f", "#c93b40", "#9c2b30"],
+      ["8%", "84%", 70, -34, "#4de3ff", "#22a9c9", "#167f99"],
+      ["66%", "88%", 110, 48, "#a77bff", "#7448d6", "#5631ab"],
+      ["40%", "93%", 38, 20, "#ffffff", "#c9cfe6", "#9aa2c4"],
+      ["86%", "44%", 44, -18, "#7bd35a", "#8b5a2b", "#6b4423"],
+    ];
+    floaters.forEach(([top, left, size, d, t, l, r], n) => {
+      stage.insertAdjacentHTML("afterbegin",
+        `<svg class="floater" width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true" style="top:${top};left:${left};--d:${d};animation-delay:${n * -1.1}s">` +
+        `<polygon points="50,4 96,27 50,50 4,27" fill="${t}"/><polygon points="4,27 50,50 50,97 4,74" fill="${l}"/><polygon points="50,50 96,27 96,74 50,97" fill="${r}"/></svg>`);
+    });
+
+    // Cursor parallax: pointer position as --mx / --my in -1..1.
+    stage.addEventListener("pointermove", (e) => {
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      stage.style.setProperty("--mx", ((e.clientX / innerWidth) * 2 - 1).toFixed(3));
+      stage.style.setProperty("--my", ((e.clientY / innerHeight) * 2 - 1).toFixed(3));
+    });
+
+    const units = [
+      ["Days", 86400, "var(--lime)"],
+      ["Hours", 3600, "var(--coral)"],
+      ["Minutes", 60, "var(--cyan)"],
+      ["Seconds", 1, "var(--violet)"],
+    ];
+    cells.innerHTML = units.map(([label, , c]) =>
+      `<div class="cell" style="--c:${c}" aria-hidden="true"><span class="digits"></span><span class="unit">${label}</span></div>`).join("");
+    const digitEls = [...cells.querySelectorAll(".digits")];
+
+    const when = new Date(target);
+    document.getElementById("date").innerHTML =
+      `<time datetime="${LAUNCH}">${when.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })} · ` +
+      `${when.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "UTC" })} UTC</time>`;
+    const local = document.getElementById("local");
+    local.textContent = `That's ${when.toLocaleString(undefined, { weekday: "long", hour: "2-digit", minute: "2-digit", timeZoneName: "short" })} where you are.`;
+
+    function tick() {
+      const left = Math.max(0, Math.floor(target / 1000) - Math.floor(Date.now() / 1000));
+      units.forEach(([, secs], i) => {
+        const value = String(Math.floor((left % (i ? units[i - 1][1] : Infinity)) / secs)).padStart(2, "0");
+        const el = digitEls[i];
+        // only replace digits that changed, so each one replays its drop-in
+        [...value].forEach((d, n) => {
+          let b = el.children[n];
+          if (b && b.textContent === d) return;
+          const fresh = document.createElement("b");
+          fresh.textContent = d;
+          b ? b.replaceWith(fresh) : el.append(fresh);
+        });
+        while (el.children.length > value.length) el.lastChild.remove();
+      });
+      const d = Math.floor(left / 86400), h = Math.floor((left % 86400) / 3600), m = Math.floor((left % 3600) / 60);
+      cells.setAttribute("aria-label", `${d} days, ${h} hours and ${m} minutes until launch`);
+      local.hidden = left === 0;
+      document.getElementById("live").hidden = left !== 0;
+    }
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
