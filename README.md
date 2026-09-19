@@ -1,7 +1,13 @@
 # caelum-web-countdown
 
-Pre-launch countdown page for the CaelumSMP website. One static `index.html`, no build step.
+Pre-launch countdown page for the CaelumSMP website. Static files, no build step, served by GitHub Pages at caelumsmp.com.
 
-- **Change the launch time:** edit `LAUNCH` near the top of the `<script>` in `index.html` (UTC).
-- **Run locally:** open `index.html` in a browser.
-- **Deploy:** GitHub Pages → Settings → Pages → Deploy from branch `main` / root.
+- `index.html`: countdown, Discord card, newsletter sign-up
+- `confirmed.html`: where Kit sends people after they confirm their email
+- `style.css`: shared styles
+
+**Settings** (top of the `<script>` in `index.html`):
+- `LAUNCH`: launch moment in UTC.
+- `KIT_FORM_ID`: the Kit form the sign-up posts to (public ID, not a secret). Empty hides the sign-up card.
+
+**Run locally:** `python -m http.server` in this folder, then open http://localhost:8000.

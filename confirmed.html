@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CaelumSMP — You're on the list</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .lead { max-width: 560px; color: #dfe6ff; font-size: clamp(16px, 1.8vw, 19px); }
+    .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 36px; }
+    .btn.ghost { background: var(--card); color: var(--text); box-shadow: inset 0 0 0 3px var(--violet); }
+    .btn.ghost:hover { background: var(--violet); color: #04131c; }
+  </style>
+</head>
+<body>
+  <!-- Kit sends people here after they click the confirm link in their email. -->
+  <div class="stage">
+    <svg class="floater" width="96" height="96" viewBox="0 0 100 100" aria-hidden="true" style="top:14%;left:7%;--d:0"><polygon points="50,4 96,27 50,50 4,27" fill="#c6ff3d"/><polygon points="4,27 50,50 50,97 4,74" fill="#8fc41f"/><polygon points="50,50 96,27 96,74 50,97" fill="#6a9612"/></svg>
+    <svg class="floater" width="70" height="70" viewBox="0 0 100 100" aria-hidden="true" style="top:10%;left:84%;--d:0;animation-delay:-2.2s"><polygon points="50,4 96,27 50,50 4,27" fill="#4de3ff"/><polygon points="4,27 50,50 50,97 4,74" fill="#22a9c9"/><polygon points="50,50 96,27 96,74 50,97" fill="#167f99"/></svg>
+    <svg class="floater" width="110" height="110" viewBox="0 0 100 100" aria-hidden="true" style="top:68%;left:86%;--d:0;animation-delay:-3.3s"><polygon points="50,4 96,27 50,50 4,27" fill="#a77bff"/><polygon points="4,27 50,50 50,97 4,74" fill="#7448d6"/><polygon points="50,50 96,27 96,74 50,97" fill="#5631ab"/></svg>
+    <svg class="floater" width="60" height="60" viewBox="0 0 100 100" aria-hidden="true" style="top:72%;left:4%;--d:0;animation-delay:-1.1s"><polygon points="50,4 96,27 50,50 4,27" fill="#ff5a5f"/><polygon points="4,27 50,50 50,97 4,74" fill="#c93b40"/><polygon points="50,50 96,27 96,74 50,97" fill="#9c2b30"/></svg>
+
+    <main>
+      <p class="brand"><svg width="44" height="44" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,4 96,27 50,50 4,27" fill="#c6ff3d"/><polygon points="4,27 50,50 50,97 4,74" fill="#8fc41f"/><polygon points="50,50 96,27 96,74 50,97" fill="#6a9612"/></svg>CaelumSMP</p>
+      <h1>You're on<br><em>the list</em></h1>
+      <p class="lead">Email confirmed. We'll send you one heads-up when the server opens, with the IP and everything you need to jump in.</p>
+      <div class="actions">
+        <a class="btn" href="./">Back to the countdown</a>
+        <a class="btn ghost" href="https://discord.gg/caelumsmp" target="_blank" rel="noopener">Join the Discord</a>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
