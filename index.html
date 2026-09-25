@@ -59,7 +59,7 @@
       <div class="cells" id="cells" role="timer" aria-label="Countdown to launch"></div>
       <p class="date" id="date"></p>
       <p class="local" id="local" hidden></p>
-      <p class="live" id="live" hidden>A few more days of work to go. We hope to launch soon, so keep an eye on the Discord.</p>
+      <p class="live" id="live">Launch postponed: we need a few more days of work to get everything ready. We hope to go live soon, so keep an eye on the Discord.</p>
 
 
       <section class="news" id="news" aria-labelledby="news-title" hidden>
@@ -144,7 +144,6 @@
       const d = Math.floor(left / 86400), h = Math.floor((left % 86400) / 3600), m = Math.floor((left % 3600) / 60);
       cells.setAttribute("aria-label", `${d} days, ${h} hours and ${m} minutes until launch`);
       local.hidden = left === 0;
-      document.getElementById("live").hidden = left !== 0;
     }
     tick();
     setInterval(tick, 1000);
